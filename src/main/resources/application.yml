@@ -1,0 +1,8 @@
+server:
+  port: 8085
+cloudant:
+  connection:
+    user_name: edaortiz
+    user_password: Ld10208152
+    account: edaortiz
+    database_name: parking_users  
