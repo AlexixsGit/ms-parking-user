@@ -28,4 +28,18 @@ public class UserService implements IUserService {
 		}
 	}
 
+	public boolean userValidations(String cardNumber, Double totalValueToPay) throws ApiException {
+
+		User user = this.userRepository.getUserByCardNumber(cardNumber);
+
+		if (user == null) {
+			return false;
+		}
+
+		if (user.getCard() == null) {
+			return false;
+		}
+		return user.getCard().getBalance() >= totalValueToPay;
+	}
+
 }

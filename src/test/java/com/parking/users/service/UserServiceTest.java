@@ -17,7 +17,7 @@ import com.parking.users.model.User;
 import com.parking.users.repository.IUserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserServiceRepositoryTest {
+public class UserServiceTest {
 
 	@Mock
 	private IUserRepository userRepositoryMock;
@@ -60,5 +60,57 @@ public class UserServiceRepositoryTest {
 		// Act
 		when(this.userRepositoryMock.getUserByCardNumber(cardNumber)).thenReturn(expected);
 		this.userServiceMock.checkIfUserByCardNumberExists(cardNumber);
+	}
+
+	@Test
+	public void userValidations_user_exists_and_has_balance_test() throws ApiException {
+		// Arrange
+		String cardNumber = "008890";
+		User expectedUser = aUser().build();
+		Double totalValueToPay = 100000d;
+		// Act
+		when(this.userRepositoryMock.getUserByCardNumber(cardNumber)).thenReturn(expectedUser);
+		boolean validationsSuccess = this.userServiceMock.userValidations(cardNumber, totalValueToPay);
+		// Assert
+		assertTrue(validationsSuccess);
+	}
+
+	@Test
+	public void userValidations_user_exists_and_does_not_has_balance_test() throws ApiException {
+		// Arrange
+		String cardNumber = "008890";
+		User expectedUser = aUser().build();
+		Double totalValueToPay = 300000d;
+		// Act
+		when(this.userRepositoryMock.getUserByCardNumber(cardNumber)).thenReturn(expectedUser);
+		boolean validationsSuccess = this.userServiceMock.userValidations(cardNumber, totalValueToPay);
+		// Assert
+		assertFalse(validationsSuccess);
+	}
+
+	@Test
+	public void userValidations_user_not_exists_test() throws ApiException {
+		// Arrange
+		String cardNumber = "008890";
+		User expectedUser = null;
+		Double totalValueToPay = 100000d;
+		// Act
+		when(this.userRepositoryMock.getUserByCardNumber(cardNumber)).thenReturn(expectedUser);
+		boolean validationsSuccess = this.userServiceMock.userValidations(cardNumber, totalValueToPay);
+		// Assert
+		assertFalse(validationsSuccess);
+	}
+
+	@Test
+	public void userValidations_card_is_null_test() throws ApiException {
+		// Arrange
+		String cardNumber = "008890";
+		User expectedUser = aUser().withCard(null).build();
+		Double totalValueToPay = 100000d;
+		// Act
+		when(this.userRepositoryMock.getUserByCardNumber(cardNumber)).thenReturn(expectedUser);
+		boolean validationsSuccess = this.userServiceMock.userValidations(cardNumber, totalValueToPay);
+		// Assert
+		assertFalse(validationsSuccess);
 	}
 }
