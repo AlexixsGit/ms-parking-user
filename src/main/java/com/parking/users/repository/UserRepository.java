@@ -33,5 +33,4 @@ public class UserRepository implements IUserRepository {
 			throw new ApiException(e);
 		}
 	}
-
 }
