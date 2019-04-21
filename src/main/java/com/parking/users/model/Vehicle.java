@@ -10,6 +10,9 @@ public class Vehicle {
 		this.type = type;
 	}
 
+	public Vehicle() {
+	}
+
 	public String getPlaque() {
 		return plaque;
 	}
