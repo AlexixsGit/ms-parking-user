@@ -12,4 +12,14 @@ public interface IUserService {
 	 * @throws ApiException
 	 */
 	public boolean checkIfUserByCardNumberExists(String cardNumber) throws ApiException;
+
+	/**
+	 * Executes the validations required for a user
+	 * 
+	 * @param cardNumber
+	 * @param totalValueToPay
+	 * @return
+	 * @throws ApiException
+	 */
+	public boolean userValidations(String cardNumber, Double totalValueToPay) throws ApiException;
 }

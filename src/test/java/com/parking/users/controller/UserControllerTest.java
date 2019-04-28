@@ -1,6 +1,11 @@
 package com.parking.users.controller;
 
-import static com.parking.users.builders.UserBuilder.aUser;
+import static com.parking.users.builders.UserValidationRequestBuilder.aUserValidationRequest;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,15 +14,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.reflect.Whitebox;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.google.gson.JsonObject;
-import com.parking.users.jsonapi.JsonApiData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parking.users.jsonapi.JsonApiBody;
-import com.parking.users.model.User;
-import com.parking.users.service.UserService;
+import com.parking.users.jsonapi.JsonApiData;
+import com.parking.users.model.UserValidationRequest;
+import com.parking.users.service.IUserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -29,24 +36,120 @@ public class UserControllerTest {
 	private UserController userControllerMock;
 
 	@Mock
-	private UserService userServiceMock;
+	private IUserService userServiceMock;
+
+	private ObjectMapper mapper;
 
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(userControllerMock).build();
 		Whitebox.setInternalState(userControllerMock, "userService", userServiceMock);
+		this.mapper = new ObjectMapper();
 	}
 
 	@Test
-	public void userValidations_test() {
+	public void userValidations_all_validations_are_success_test() throws Exception {
 		// Arrange
-		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("cardNumber", "008890");
-		JsonApiBody<JsonObject> jsonApiRequest = new JsonApiBody<>();
-		JsonApiData<JsonObject> data = new JsonApiData<>();
-		data.setAttributes(jsonObject);
+		Double totalValueToPay = 0d;
+		UserValidationRequest userValidationRequest = aUserValidationRequest().build();
+		JsonApiBody<UserValidationRequest> jsonApiRequest = new JsonApiBody<>();
+		JsonApiData<UserValidationRequest> data = new JsonApiData<>();
+		data.setAttributes(userValidationRequest);
 		jsonApiRequest.setData(data);
+
 		// Act
+		when(this.userServiceMock.userValidations(userValidationRequest.getCardNumber(), totalValueToPay))
+				.thenReturn(true);
+		ResultActions result = mockMvc.perform(post("/user/checkInuserValidation")
+				.accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(this.mapper.writeValueAsString(jsonApiRequest)));
 		// Assert
+		result.andExpect(status().isOk());
+	}
+
+	@Test
+	public void userValidations_are_true_test() throws Exception {
+		// Arrange
+		Double totalValueToPay = 0d;
+		UserValidationRequest userValidationRequest = aUserValidationRequest().build();
+		JsonApiBody<UserValidationRequest> jsonApiRequest = new JsonApiBody<>();
+		JsonApiData<UserValidationRequest> data = new JsonApiData<>();
+		data.setAttributes(userValidationRequest);
+		jsonApiRequest.setData(data);
+
+		// Act
+		when(this.userServiceMock.userValidations(userValidationRequest.getCardNumber(), totalValueToPay))
+				.thenReturn(true);
+		ResultActions result = mockMvc.perform(post("/user/checkInuserValidation")
+				.accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(this.mapper.writeValueAsString(jsonApiRequest)));
+		// Assert
+		result.andExpect(status().isOk()).andExpect(jsonPath("$.data").exists())
+				.andExpect(jsonPath("$.data.attributes.valid").value(true));
+	}
+
+	@Test
+	public void userValidations_are_false_test() throws Exception {
+		// Arrange
+		Double totalValueToPay = 500000d;
+		UserValidationRequest userValidationRequest = aUserValidationRequest().build();
+		JsonApiBody<UserValidationRequest> jsonApiRequest = new JsonApiBody<>();
+		JsonApiData<UserValidationRequest> data = new JsonApiData<>();
+		data.setAttributes(userValidationRequest);
+		jsonApiRequest.setData(data);
+
+		// Act
+		when(this.userServiceMock.userValidations(userValidationRequest.getCardNumber(), totalValueToPay))
+				.thenReturn(false);
+		ResultActions result = mockMvc.perform(post("/user/checkInuserValidation")
+				.accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(this.mapper.writeValueAsString(jsonApiRequest)));
+		// Assert
+		result.andExpect(status().isOk()).andExpect(jsonPath("$.data").exists())
+				.andExpect(jsonPath("$.data.attributes.valid").value(false));
+	}
+
+	@Test(expected = Exception.class)
+	public void userValidations_throws_exception_test() throws Exception {
+		// Arrange
+		Double totalValueToPay = 0d;
+		UserValidationRequest userValidationRequest = aUserValidationRequest().build();
+		JsonApiBody<UserValidationRequest> jsonApiRequest = new JsonApiBody<>();
+
+		// Act
+		when(this.userServiceMock.userValidations(userValidationRequest.getCardNumber(), totalValueToPay))
+				.thenReturn(false);
+		mockMvc.perform(post("/user/checkInuserValidation").accept(MediaType.APPLICATION_JSON_UTF8)
+				.contentType(MediaType.APPLICATION_JSON_UTF8).content(this.mapper.writeValueAsString(jsonApiRequest)));
+	}
+
+	@Test
+	public void userValidations_card_number_is_null_test() throws Exception {
+		// Arrange
+		Double totalValueToPay = 0d;
+		UserValidationRequest userValidationRequest = aUserValidationRequest().withCardNumber(null).build();
+		JsonApiBody<UserValidationRequest> jsonApiRequest = new JsonApiBody<>();
+		JsonApiData<UserValidationRequest> data = new JsonApiData<>();
+		data.setAttributes(userValidationRequest);
+		jsonApiRequest.setData(data);
+
+		// Act
+		when(this.userServiceMock.userValidations(userValidationRequest.getCardNumber(), totalValueToPay))
+				.thenReturn(false);
+		ResultActions result = mockMvc.perform(post("/user/checkInuserValidation")
+				.accept(MediaType.APPLICATION_JSON_UTF8).contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(this.mapper.writeValueAsString(jsonApiRequest)));
+		// Assert
+		result.andExpect(status().is4xxClientError()).andExpect(jsonPath("$.errors").exists());
+	}
+
+	@Test
+	public void userValidations_path_does_not_exists_test() throws Exception {
+		// Arrange
+		String cardNumber = "008890";
+		// Act
+		ResultActions result = mockMvc.perform(get("/user/getUserByCardNumbers").param("cardNumber", cardNumber));
+		// Assert
+		result.andExpect(status().is4xxClientError());
 	}
 }

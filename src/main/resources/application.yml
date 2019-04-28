@@ -7,5 +7,15 @@ cloudant:
     account: 
     database_name: parking_users  
   search_index: users/cardNumber
+app:
+  errors:
+    card_number_empty:
+      code: "0001"
+      message: El numero del carnet esta vacio
+    required_field_empty:
+      code: "0002"
+      message: El campo obligatorio esta vacio
+  path:
+    user_validation:  /user/checkInuserValidation 
     
     

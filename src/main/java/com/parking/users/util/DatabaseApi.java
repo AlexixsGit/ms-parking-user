@@ -16,8 +16,8 @@ import com.cloudant.client.api.Database;
 @Component
 public class DatabaseApi {
 
-	@Autowired
-	private Constant constant;
+	public static final String USER_NAME = "";
+	public static final String PASSWORD = "";
 
 	/**
 	 * Connect to cloudant database
@@ -25,9 +25,9 @@ public class DatabaseApi {
 	 * @return
 	 */
 	public Database getCloudantConnection() {
-		CloudantClient cloudantClient = ClientBuilder.account(constant.account).username(constant.username)
-				.password(constant.password).build();
-		return cloudantClient.database(constant.databaseName, false);
+		CloudantClient cloudantClient = ClientBuilder.account(USER_NAME).username(USER_NAME)
+				.password(PASSWORD).build();
+		return cloudantClient.database("parking_users", false);
 	}
 
 }

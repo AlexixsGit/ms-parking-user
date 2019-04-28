@@ -11,4 +11,14 @@ public class JsonApiBody<T> {
 	public void setData(JsonApiData<T> data) {
 		this.data = data;
 	}
+
+	public JsonApiBody<T> data(JsonApiData<T> jsonApiData) {
+		this.data = jsonApiData;
+		return this;
+	}
+
+	public JsonApiData<T> newDataInstance() {
+		this.data = new JsonApiData<>();
+		return this.data;
+	}
 }

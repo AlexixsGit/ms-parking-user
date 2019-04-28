@@ -22,6 +22,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compile group: 'com.cloudant', name: 'cloudant-client', version: '2.16.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	
 	
 	compileOnly 'org.projectlombok:lombok'
