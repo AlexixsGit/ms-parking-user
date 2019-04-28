@@ -13,21 +13,26 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.reflect.Whitebox;
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.parking.users.UsersApplicationTests;
 import com.parking.users.jsonapi.JsonApiBody;
 import com.parking.users.jsonapi.JsonApiData;
 import com.parking.users.model.UserValidationRequest;
 import com.parking.users.service.IUserService;
+import com.parking.users.util.YamlProperties;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
+@ContextConfiguration(classes = UsersApplicationTests.class, initializers = ConfigFileApplicationContextInitializer.class)
 public class UserControllerTest {
 
 	private MockMvc mockMvc;
@@ -37,6 +42,9 @@ public class UserControllerTest {
 
 	@Mock
 	private IUserService userServiceMock;
+
+	@Mock
+	private YamlProperties yamlPropertiesMock;
 
 	private ObjectMapper mapper;
 

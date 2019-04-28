@@ -16,8 +16,8 @@ import com.cloudant.client.api.Database;
 @Component
 public class DatabaseApi {
 
-	public static final String USER_NAME = "";
-	public static final String PASSWORD = "";
+	@Autowired
+	private YamlProperties yamlProperties;
 
 	/**
 	 * Connect to cloudant database
@@ -25,9 +25,9 @@ public class DatabaseApi {
 	 * @return
 	 */
 	public Database getCloudantConnection() {
-		CloudantClient cloudantClient = ClientBuilder.account(USER_NAME).username(USER_NAME)
-				.password(PASSWORD).build();
-		return cloudantClient.database("parking_users", false);
+		CloudantClient cloudantClient = ClientBuilder.account(this.yamlProperties.account).username(this.yamlProperties.username)
+				.password(this.yamlProperties.password).build();
+		return cloudantClient.database(this.yamlProperties.databaseName, false);
 	}
 
 }

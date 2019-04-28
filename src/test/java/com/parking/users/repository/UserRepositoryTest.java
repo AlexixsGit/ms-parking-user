@@ -2,6 +2,7 @@ package com.parking.users.repository;
 
 import static com.parking.users.builders.UserBuilder.aUser;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import com.cloudant.client.api.Database;
 import com.cloudant.client.api.Search;
 import com.parking.users.exceptions.ApiException;
 import com.parking.users.model.User;
-import com.parking.users.util.Constant;
 import com.parking.users.util.DatabaseApi;
+import com.parking.users.util.YamlProperties;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserRepositoryTest {
@@ -34,16 +35,16 @@ public class UserRepositoryTest {
 	private Database database;
 
 	@Mock
-	private Constant constantMock;
+	private YamlProperties yamlPropertiesMock;
 
 	@InjectMocks
 	private UserRepository repositoryMock;
 
 	@Before
 	public void setup() {
-		this.constantMock.searchIndexByCardNumber = "users/cardNumber";
+		this.yamlPropertiesMock.searchIndexByCardNumber = "users/cardNumber";
 		when(this.databaseApiMock.getCloudantConnection()).thenReturn(database);
-		when(database.search(this.constantMock.searchIndexByCardNumber)).thenReturn(searchMock);
+		when(database.search(this.yamlPropertiesMock.searchIndexByCardNumber)).thenReturn(searchMock);
 		when(searchMock.includeDocs(true)).thenReturn(searchMock);
 
 	}
@@ -53,10 +54,10 @@ public class UserRepositoryTest {
 		// Arrange
 		String cardNumber = "008890";
 		User expected = aUser().build();
-		List<User> result = new ArrayList<>();
+		List<Object> result = new ArrayList<>();
 		result.add(expected);
 		// Act
-		when(searchMock.query(String.format("cardNumber: %s", cardNumber), User.class)).thenReturn(result);
+		when(searchMock.query(any(), any())).thenReturn(result);
 		User actual = this.repositoryMock.getUserByCardNumber(cardNumber);
 		// Assert
 		assertEquals(expected, actual);
@@ -66,9 +67,8 @@ public class UserRepositoryTest {
 	public void getUserByCardNumber_throws_exception_test() throws ApiException {
 		// Arrange
 		String cardNumber = "008890";
-		List<User> result = new ArrayList<>();
 		// Act
-		when(searchMock.query(String.format("cardNumber: %s", cardNumber), User.class)).thenReturn(result);
+		when(searchMock.query(any(), any())).thenReturn(null);
 		this.repositoryMock.getUserByCardNumber(cardNumber);
 	}
 }

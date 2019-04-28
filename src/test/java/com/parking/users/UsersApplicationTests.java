@@ -1,16 +1,18 @@
 package com.parking.users;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import com.parking.users.util.YamlProperties;
+
+@EnableAutoConfiguration
+@EnableConfigurationProperties(value = { YamlProperties.class })
 public class UsersApplicationTests {
 
-	@Test
-	public void contextLoads() {
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+		return new PropertySourcesPlaceholderConfigurer();
 	}
-
 }
