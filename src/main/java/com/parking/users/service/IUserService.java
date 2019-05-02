@@ -1,6 +1,8 @@
 package com.parking.users.service;
 
 import com.parking.users.exceptions.ApiException;
+import com.parking.users.jsonapi.JsonApiBody;
+import com.parking.users.model.UserValidationRequest;
 
 public interface IUserService {
 
@@ -14,12 +16,13 @@ public interface IUserService {
 	public boolean checkIfUserByCardNumberExists(String cardNumber) throws ApiException;
 
 	/**
-	 * Executes the validations required for a user
+	 * User validations
 	 * 
-	 * @param cardNumber
+	 * @param request
 	 * @param totalValueToPay
 	 * @return
 	 * @throws ApiException
 	 */
-	public boolean userValidations(String cardNumber, Double totalValueToPay) throws ApiException;
+	public Object userValidations(JsonApiBody<UserValidationRequest> request, double totalValueToPay)
+			throws ApiException;
 }

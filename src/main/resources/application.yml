@@ -12,9 +12,18 @@ app:
     card_number_empty:
       code: "0001"
       message: El numero del carnet esta vacio
+    user_not_found: 
+      code: "0003"
+      message: El usuario no existe
     required_field_empty:
       code: "0002"
       message: El campo obligatorio esta vacio
+    user_validations:
+      required:
+        title: Datos obligatorios vacios 
+    user_without_balance:
+      code: "0004"
+      message: El usuario no tiene saldo suficiente
   path:
     user_validation:  /user/checkInuserValidation 
     

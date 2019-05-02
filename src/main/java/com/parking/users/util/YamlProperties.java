@@ -37,4 +37,19 @@ public class YamlProperties {
 
 	@Value("${app.path.user_validation}")
 	public String appPathUserValidation;
+
+	@Value("${app.errors.user_validations.required.title}")
+	public String appErrorsUserValidationRequiredTitle;
+
+	@Value("${app.errors.user_not_found.code}")
+	public String appErrorsUserNotFoundCode;
+
+	@Value("${app.errors.user_not_found.message}")
+	public String appErrorsUserNotFoundMessage;
+
+	@Value("${app.errors.user_without_balance.code}")
+	public String appErrorsUserWithoutBalanceCode;
+
+	@Value("${app.errors.user_without_balance.message}")
+	public String appErrorsUserWithoutBalanceMessage;
 }

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.parking.users.exceptions.ApiException;
 import com.parking.users.jsonapi.JsonApiBody;
 import com.parking.users.jsonapi.JsonApiError;
+import com.parking.users.model.User;
 import com.parking.users.model.UserValidationRequest;
-import com.parking.users.model.UserValidationResponse;
 import com.parking.users.service.IUserService;
 import com.parking.users.util.Util;
 import com.parking.users.util.YamlProperties;
@@ -42,14 +42,16 @@ public class UserController {
 				return new ResponseEntity<Object>(errApiError, HttpStatus.BAD_REQUEST);
 			}
 
-			boolean allSuccess = this.userService.userValidations(cardNumber, 0d);
-			UserValidationResponse userValidationResponse = new UserValidationResponse();
-			userValidationResponse.setValid(allSuccess);
-			JsonApiBody<UserValidationResponse> response = new JsonApiBody<>();
-			response.newDataInstance().setAttributes(userValidationResponse);
-			response.getData().setId(request.getData().getId());
-			response.getData().setType(request.getData().getType());
-			return new ResponseEntity<Object>(response, HttpStatus.OK);
+			Object response = this.userService.userValidations(request, 0d);
+
+			if (response instanceof JsonApiError) {
+				return new ResponseEntity<Object>(response, HttpStatus.FAILED_DEPENDENCY);
+			}
+			JsonApiBody<User> jsonApi = new JsonApiBody<>();
+			jsonApi.newDataInstance().setAttributes((User) response);
+			jsonApi.getData().setId(request.getData().getId());
+			jsonApi.getData().setType(request.getData().getType());
+			return new ResponseEntity<Object>(jsonApi, HttpStatus.OK);
 		} catch (Exception e) {
 			throw new ApiException(e, request.getData().getId(), this.yamlProperties.appPathUserValidation);
 		}
