@@ -1,14 +1,12 @@
 package com.parking.users;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-import com.parking.users.util.YamlProperties;
-
 @EnableAutoConfiguration
-@EnableConfigurationProperties(value = { YamlProperties.class })
+@PropertySource("classpath:application.yml")
 public class UsersApplicationTests {
 
 	@Bean
