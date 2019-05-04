@@ -81,7 +81,7 @@ public class UserControllerTest {
 	}
 
 	@Test
-	public void userValidations_are_true_test() throws Exception {
+	public void userValidations_user_exist() throws Exception {
 		// Arrange
 		UserValidationRequest userValidationRequest = aUserValidationRequest().build();
 		JsonApiBody<UserValidationRequest> jsonApiRequest = new JsonApiBody<>();

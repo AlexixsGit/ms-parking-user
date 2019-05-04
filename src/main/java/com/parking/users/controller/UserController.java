@@ -42,7 +42,8 @@ public class UserController {
 				return new ResponseEntity<Object>(errApiError, HttpStatus.BAD_REQUEST);
 			}
 
-			Object response = this.userService.userValidations(request, 0d);
+			Object response = this.userService.userValidations(request,
+					request.getData().getAttributes().getTotalValueToPay());
 
 			if (response instanceof JsonApiError) {
 				return new ResponseEntity<Object>(response, HttpStatus.FAILED_DEPENDENCY);
