@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubernetes-demo-ingress 
+spec:
+  rules:
+  - host: k8s.dev.host
+    http:
+      paths:
+      - path: /getService
+        backend:
+          serviceName: kubernetes-demo-service
+          servicePort: 8085      

@@ -6,7 +6,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.parking'
-version = 'develop.20190504.1.0.0'
+version = 'develop.20190505.1.0.0'
 
 sourceCompatibility = '1.8'
 

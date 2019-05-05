@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: users-service
+spec:
+  selector:
+    app: web
+  type: NodePort
+  ports:
+  - port: 8085
+    targetPort: 8085
+    nodePort: 31318
+    protocol: TCP
